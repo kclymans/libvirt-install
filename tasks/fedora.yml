@@ -27,14 +27,14 @@
 - name: create vm storage location folder
   file: path={{storagedir}} state=directory mode=0775 recurse=yes 
   # TODO:should set selinux context
-#- name: define pools in libvirt
-#  virt_pool: command=define name=virtimages xml='{{ lookup("template", "st_pool.xml.j2") }}'
-#- name: build pool
-#  virt_pool: command=build name=virtimages
-#- name: start pool
-#  virt_pool: command=create name=virtimages
-#- name: autostart pool
-#  virt_pool: autostart=yes name=virtimages
+- name: define pools in libvirt
+  virt_pool: command=define name=virtimages xml='{{ lookup("template", "st_pool.xml.j2") }}'
+- name: build pool
+  virt_pool: command=build name=virtimages
+- name: start pool
+  virt_pool: command=create name=virtimages
+- name: autostart pool
+  virt_pool: autostart=yes name=virtimages
 
 #networking
 - name: define internal network
