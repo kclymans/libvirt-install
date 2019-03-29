@@ -1,3 +1,18 @@
 storagedir: "/home/vmstore"
 mac: "52:54:00:00:00:00"
 uid: "404a5ef4-a9e5-314c-335f-000000000000"
+pkg_fedora:
+  - libvirt-daemon-kvm
+  - virt-install
+  - qemu-kvm
+  - libvirt-python
+  - python-lxml
+  - virt-manager
+  - virt-viewer
+  - libvirt-daemon-config-network
+  - guestfs-browser
+  - libguestfs-tools
+  - virt-top
+  - python-libguestfs
+  - policycoreutils-python
+  - libguestfs-tools-c

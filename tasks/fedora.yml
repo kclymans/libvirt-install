@@ -1,47 +1,75 @@
 ---
 - name: install libvirt
-  dnf: name={{item}} state=present
-  with_items:
-  - libvirt-daemon-kvm
-  - virt-install
-  - qemu-kvm
-  - libvirt-python
-  - python-lxml
-  - virt-manager
-  - virt-viewer
-  - libvirt-daemon-config-network
-  - guestfs-browser
-  - libguestfs-tools
-  - virt-top
-  - python-libguestfs
-  - policycoreutils-python
-  - libguestfs-tools-c
+  dnf: 
+    name: {{ pkg_fedora }} 
+    state: present
+
 - name: start service
-  service: name=libvirtd state=started
-# guestenv
-- name: enable shutdown of guests 
-  lineinfile: dest=/etc/sysconfig/libvirt-guests regexp="^ON_SHUTDOWN=" line="ON_SHUTDOWN=shutdown"
-- name: set shutdown timeout of guests
-  lineinfile: dest=/etc/sysconfig/libvirt-guests regexp="^SHUTDOWN_TIMEOUT=" line="SHUTDOWN_TIMEOUT=300"
+  service: 
+    name: libvirtd 
+    state: started
+
+- name: Enable shutdown of guests 
+  lineinfile: 
+    dest: /etc/sysconfig/libvirt-guests 
+    regexp: "^ON_SHUTDOWN=" 
+    line: "ON_SHUTDOWN=shutdown"
+
+- name: Set shutdown timeout of guests
+  lineinfile: 
+    dest: /etc/sysconfig/libvirt-guests 
+    regexp: "^SHUTDOWN_TIMEOUT=" 
+    line: "SHUTDOWN_TIMEOUT=300"
+
 # storage
 - name: create vm storage location folder
-  file: path={{storagedir}} state=directory mode=0775 recurse=yes 
+  file: 
+    path: {{ storagedir }} 
+    state: directory 
+    mode: 0775 
+    recurse: yes
+
   # TODO:should set selinux context
 - name: define pools in libvirt
-  virt_pool: command=define name=virtimages xml='{{ lookup("template", "st_pool.xml.j2") }}'
+  virt_pool: 
+    command: define 
+    name: virtimages 
+    xml: '{{ lookup("template","st_pool.xml.j2") }}'
+
 - name: build pool
-  virt_pool: command=build name=virtimages
+  virt_pool: 
+    command: build 
+    name: virtimages
+
 - name: start pool
-  virt_pool: command=create name=virtimages
+  virt_pool: 
+    command: create 
+    name: virtimages
+
 - name: autostart pool
-  virt_pool: autostart=yes name=virtimages
+  virt_pool: 
+    autostart: yes 
+    name: virtimages
 
 #networking
 - name: define internal network
-  virt_net: command=define name=internal xml='{{ lookup("template", "internal.xml.j2") }}'
+  virt_net: 
+    command: define 
+    name: internal 
+    xml: '{{ lookup("template", "internal.xml.j2") }}'
+
 - name: start internal net
-  virt_net: command=create name=internal
+  virt_net: 
+    command: create 
+    name: internal
+
 - name: enable IP forwarding
-  sysctl: name="net.ipv4.ip_forward" value=1 state=present 
+  sysctl: 
+    name: "net.ipv4.ip_forward" 
+    value: 1 
+    state: present 
+
 - name: autostart network 
-  virt_net: autostart=yes name=internal
+  virt_net: 
+    autostart: yes 
+    name: internal
